@@ -1,0 +1,19 @@
+# Agents + chat UI backend
+openai
+openai-agents
+openai-chatkit
+
+# Web server
+fastapi
+uvicorn[standard]
+
+# Config
+python-dotenv
+pydantic-settings
+
+# Notebooks (Parts 1–5)
+ipykernel
+
+# Testing
+pytest
+pytest-asyncio
