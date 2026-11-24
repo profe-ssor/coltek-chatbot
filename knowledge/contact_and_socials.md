@@ -28,7 +28,7 @@ Do not tell customers that WhatsApp is available until confirmed.
 **GhanaPost GPS address:** [FILL IN, if approved for public use]  
 **Visits:** [CONFIRM whether visits are by appointment.]
 
-**Office hours:** Monday – Friday  | 9:00 AM – 6:00 PM GMT.
+**Office hours:** Thursday – Friday  | 1:00 AM – 6:00 PM GMT.
 
 Ghana uses Greenwich Mean Time (GMT), UTC+0, throughout the year.
 
