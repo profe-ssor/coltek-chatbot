@@ -1,0 +1,16 @@
+{
+  "name": "coltek-chat-widget",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Coltek floating chat widget: one classic script, Shadow DOM, no runtime dependencies.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && vite build && node scripts/check-size.mjs",
+    "typecheck": "tsc --noEmit",
+    "dev": "vite build --watch"
+  },
+  "devDependencies": {
+    "typescript": "5.6.3",
+    "vite": "5.4.11"
+  }
+}

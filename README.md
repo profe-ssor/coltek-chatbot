@@ -1,9 +1,9 @@
 # Coltek Website Chatbot
 
-AI chatbot for [website name], built with the OpenAI Agents SDK and ChatKit.
+AI chatbot for [website name], built with the OpenAI Agents SDK, our own FastAPI chat API and our own chat widget.
 
 ## Stack
-OpenAI Agents SDK · ChatKit Python SDK · FastAPI · Uvicorn
+OpenAI Agents SDK · FastAPI (Server-Sent Events) · SQLModel · our own TypeScript chat widget
 
 ## Setup
 
@@ -24,7 +24,8 @@ uvicorn server.main:app --reload --port 8000
 
 ## Project layout
 - `chatbot/` – agents, tools, guardrails (no web code)
-- `server/` – ChatKit server, storage, FastAPI endpoint
+- `server/` – chat API: threads, messages, streaming `/api/chat`, rate limiting
+- `embed/` – the floating chat widget for the websites
 - `knowledge/` – files uploaded to the vector store
 - `notebooks/` – Parts 1–5 experiments
 - `deploy/` – Docker, Nginx, systemd

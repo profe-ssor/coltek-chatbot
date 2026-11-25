@@ -1,7 +1,6 @@
-# Agents + chat UI backend
+# Agents
 openai
 openai-agents
-openai-chatkit
 
 # Web server
 fastapi
@@ -11,9 +10,19 @@ uvicorn[standard]
 python-dotenv
 pydantic-settings
 
+# Database (courses, leads, demo requests, chat threads/messages)
+sqlmodel
+# Agent conversation memory (Agents SDK SQLAlchemySession needs an async driver)
+aiosqlite        # SQLite (development and the default DATABASE_URL)
+greenlet         # required by SQLAlchemy's asyncio support
+
 # Notebooks (Parts 1–5)
 ipykernel
 
 # Testing
 pytest
 pytest-asyncio
+httpx            # FastAPI TestClient
+
+# Production only (not needed for local SQLite)
+# asyncpg        # uncomment when DATABASE_URL points at PostgreSQL

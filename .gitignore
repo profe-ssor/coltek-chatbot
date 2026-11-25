@@ -29,3 +29,5 @@ Thumbs.db
 
 # Logs
 *.log
+# Widget build tooling
+embed/node_modules/

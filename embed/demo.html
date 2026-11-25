@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- viewport-fit=cover lets the widget use the iPhone safe-area insets (notch, home bar) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- A strict Content Security Policy, to prove the widget needs no inline scripts or styles -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src http://localhost:8000">
+  <title>Demo site – Coltek chat widget</title>
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site">
+    <strong>COLTEK Technologies (demo page)</strong>
+    <nav><a href="#">Services</a><a href="#">Academy</a><a href="#">OpenDoor</a><a href="#">Contact</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Transforming Potentials into Excellence</h1>
+      <p>This is a fake page for testing the Coltek chat widget. It talks to the chat API at
+         <code>http://localhost:8000</code>, so start the API first (see README.md).</p>
+      <button type="button">A site button with loud styles</button>
+    </section>
+    <h2>About us</h2>
+    <p>Coltek Technologies is a Ghanaian technology company providing software engineering, artificial
+       intelligence, digital transformation and technology education services.</p>
+    <h2>Services</h2>
+    <p>Custom software, websites and web apps, mobile apps, AI solutions such as chatbots, school and church systems.</p>
+    <h2>Coltek Code Academy</h2>
+    <p>Complete Web Development Bootcamp and UX/UI Design Masterclass.</p>
+    <h2>OpenDoor</h2>
+    <p>Church management software for membership, attendance and giving records.</p>
+    <p>More text so the page is long enough to scroll. More text so the page is long enough to scroll.</p>
+    <p>More text so the page is long enough to scroll. More text so the page is long enough to scroll.</p>
+    <p>More text so the page is long enough to scroll. More text so the page is long enough to scroll.</p>
+  </main>
+  <a class="fake-whatsapp" href="#" aria-label="WhatsApp (fake)">WA</a>
+
+  <!-- The widget. Config via data-* attributes, so no inline script is needed (strict CSP). -->
+  <script src="dist/coltek-chat.js" defer
+          data-api-url="http://localhost:8000"
+          data-position="right"
+          data-logo-url=""
+          data-privacy-policy-url="https://coltektechnologies.io/privacy"></script>
+</body>
+</html>
