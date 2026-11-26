@@ -6,7 +6,7 @@ export const DEFAULTS: WidgetConfig = {
   apiUrl: "",
   brand: { primary: "#0B2545", accent: "#13C4A3", text: "#1B1B1B", surface: "#FFFFFF" },
   logoUrl: "https://coltektechnologies.io/android-chrome-512x512.png",
-  botName: "Coltek Assistant",
+  botName: "Colbot",
   position: "right",
   greeting: "Hi! I'm Coltek's assistant. I can help with our software services, Coltek Code Academy courses and OpenDoor.",
   bubbleText: "Hi! Need help with a website, a course or OpenDoor?",
