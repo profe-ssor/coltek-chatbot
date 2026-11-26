@@ -33,12 +33,12 @@ Source in `src/`:
 
 ## Add it to a website
 
-1. **Host the file.** Serve `dist/coltek-chat.js` from one place, for example `https://chat.coltektechnologies.io/widget/coltek-chat.js` (Nginx, next to the API). All three sites can load it from there.
+1. **Host the file.** This repository's root `vercel.json` deploys the widget and FastAPI app as Vercel Services. The widget is public at `/coltek-chat.js`; the API is public under `/api`, `/admin`, and `/health`.
 2. **Paste [`snippet.html`](snippet.html) just before `</body>` on every page:**
    - **Plain HTML:** in every page, or in the shared footer include.
    - **WordPress:** in the theme's `footer.php` before `wp_footer()`, or with a "header and footer scripts" plugin. The script tag doesn't use `type="module"`, so minify/caching plugins can't break it.
    - **Angular / React / Vue:** in `index.html` (`src/index.html` or `public/index.html`), not inside a component.
-3. **Set `data-api-url`** to the chat API, for example `https://chat.coltektechnologies.io`.
+3. **Set the script URL** to your Vercel deployment, for example `https://your-project.vercel.app/coltek-chat.js`. By default, the widget calls the API on that same deployment origin. Set `data-api-url` only if the API is hosted on a different origin.
 4. **On the server,** add every site's origin to `ALLOWED_ORIGINS` in `.env`:
    ```
    ALLOWED_ORIGINS=https://coltektechnologies.io,https://www.coltektechnologies.io,https://coltekacademy.coltektechnologies.io,https://open-door.site,https://www.open-door.site

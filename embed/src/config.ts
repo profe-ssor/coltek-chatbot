@@ -2,7 +2,8 @@ import type { WidgetConfig } from "./types";
 
 // TODO before launch: replace the brand colours and logo with Coltek's real values.
 export const DEFAULTS: WidgetConfig = {
-  apiUrl: "https://chat.coltektechnologies.io",
+  // When the widget is served from Vercel, default to that same deployment's API.
+  apiUrl: "",
   brand: { primary: "#0B2545", accent: "#13C4A3", text: "#1B1B1B", surface: "#FFFFFF" },
   logoUrl: "https://coltektechnologies.io/android-chrome-512x512.png",
   botName: "Coltek Assistant",
@@ -28,6 +29,7 @@ function fromScriptTag(script: HTMLOrSVGScriptElement | null): Partial2<WidgetCo
   const d = script.dataset;
   const out: Partial2<WidgetConfig> = {};
   if (d.apiUrl) out.apiUrl = d.apiUrl;
+  else if (script.src) out.apiUrl = new URL(script.src, window.location.href).origin;
   if (d.logoUrl) out.logoUrl = d.logoUrl;
   if (d.botName) out.botName = d.botName;
   if (d.position === "left" || d.position === "right") out.position = d.position;

@@ -22,6 +22,10 @@ cp .env.example .env            # then fill in your keys
 uvicorn server.main:app --reload --port 8000
 ```
 
+## Deploy as Vercel Services
+
+The root `vercel.json` defines a FastAPI service (`app`) and a Vite widget asset service (`embed`). In Vercel project settings, select **Services** as the framework preset. Set the required environment variables for FastAPI in Vercel (including `OPENAI_API_KEY`, `VECTOR_STORE_ID`, Neon `DATABASE_URL`, `APP_ENV=production`, and the Resend settings). Route the widget script from `https://<your-vercel-domain>/coltek-chat.js`; it will use that same origin for the API unless `data-api-url` overrides it. Add the website origins to `ALLOWED_ORIGINS`.
+
 ## Conversation admin
 
 Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` in `.env`, restart the server, and open
