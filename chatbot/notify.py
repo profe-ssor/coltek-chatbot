@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def smtp_configured() -> bool:
-    return bool(settings.smtp_host and settings.notify_email_to)
+    return bool(settings.smtp_host and (settings.notify_email_to or settings.smtp_user))
 
 
 def notify_team(subject: str, body: str) -> bool:
@@ -20,13 +20,20 @@ def notify_team(subject: str, body: str) -> bool:
     """
     # The subject and body contain the visitor's name and phone number, so they are never logged.
     if not smtp_configured():
-        logger.warning("SMTP not configured (SMTP_HOST / NOTIFY_EMAIL_TO empty); team not emailed")
+        missing = []
+        if not settings.smtp_host:
+            missing.append("EMAIL_SMTP_SERVER (or SMTP_HOST)")
+        if not (settings.notify_email_to or settings.smtp_user):
+            missing.append("EMAIL_ADDRESS (or NOTIFY_EMAIL_TO)")
+        logger.warning("SMTP not configured (%s missing); team not emailed", ", ".join(missing))
         return False
 
     message = EmailMessage()
     message["Subject"] = subject
     message["From"] = settings.smtp_from or settings.smtp_user
-    message["To"] = settings.notify_email_to
+    # EMAIL_ADDRESS is the common single-address setup: the same mailbox sends and
+    # receives notifications. NOTIFY_EMAIL_TO can still override the recipient.
+    message["To"] = settings.notify_email_to or settings.smtp_user
     message.set_content(body)
 
     try:

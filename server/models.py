@@ -85,6 +85,19 @@ def list_messages(thread_id: str) -> list[ChatMessage]:
         ).all())
 
 
+def list_threads(limit: int = 50, offset: int = 0) -> list[ChatThread]:
+    """Newest conversations first for the private admin viewer."""
+    with Session(get_engine()) as session:
+        return list(session.exec(
+            select(ChatThread).order_by(ChatThread.updated_at.desc()).offset(offset).limit(limit)
+        ).all())
+
+
+def get_thread(thread_id: str) -> ChatThread | None:
+    with Session(get_engine()) as session:
+        return session.get(ChatThread, thread_id)
+
+
 def find_saved_turn(thread_id: str, client_message_id: str) -> tuple[ChatMessage | None, ChatMessage | None]:
     """(user message, the assistant reply saved right after it) for a client_message_id already seen in
     this thread, else (None, None). Used to answer a retry without running the agent again."""

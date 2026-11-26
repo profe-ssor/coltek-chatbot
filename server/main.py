@@ -12,16 +12,19 @@ import logging
 import re
 import secrets
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from chatbot.config import settings
 from server import chat_service
 from server.context import RequestContext
-from server.models import create_tables, create_thread, find_saved_turn, get_visitor_thread, list_messages
+from server.models import (create_tables, create_thread, find_saved_turn, get_thread,
+                           get_visitor_thread, list_messages, list_threads)
 from server.rate_limit import RateLimiter
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -41,6 +44,21 @@ BUSY_TEXT = "Please wait for the current reply to finish."
 
 rate_limiter = RateLimiter(settings.rate_limit_per_hour)
 _active_threads: set[str] = set()   # threads with a reply in progress (one reply at a time per thread)
+admin_basic = HTTPBasic(auto_error=False)
+
+
+def require_admin(credentials: HTTPBasicCredentials | None = Depends(admin_basic)) -> str:
+    """Fail closed: admin routes stay unavailable until credentials are configured."""
+    if not settings.admin_username or not settings.admin_password:
+        raise HTTPException(status_code=404, detail="Not found")
+    valid = credentials is not None
+    if valid:
+        valid = secrets.compare_digest(credentials.username.encode(), settings.admin_username.encode())
+        valid = secrets.compare_digest(credentials.password.encode(), settings.admin_password.encode()) and valid
+    if not valid:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required",
+                            headers={"WWW-Authenticate": "Basic"})
+    return credentials.username
 
 
 # ---------------------------------------------------------------------------
@@ -251,3 +269,45 @@ async def chat(body: ChatBody, request: Request) -> Response:
 @app.get("/health")
 async def health() -> JSONResponse:
     return JSONResponse({"status": "ok"})
+
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_page(_admin: str = Depends(require_admin)) -> HTMLResponse:
+    html = Path(__file__).with_name("admin.html").read_text(encoding="utf-8")
+    return HTMLResponse(html, headers={"Cache-Control": "no-store"})
+
+
+@app.get("/admin/api/conversations")
+async def admin_conversations(_admin: str = Depends(require_admin)) -> JSONResponse:
+    threads = await asyncio.to_thread(list_threads, 100, 0)
+    conversations = []
+    for thread in threads:
+        messages = await asyncio.to_thread(list_messages, thread.id)
+        conversations.append({
+            "id": thread.id,
+            "page": thread.page,
+            "department": thread.department,
+            "updated_at": thread.updated_at.isoformat(),
+            "last_message": messages[-1].content[:240] if messages else "",
+        })
+    return JSONResponse({"conversations": conversations}, headers={"Cache-Control": "no-store"})
+
+
+@app.get("/admin/api/conversations/{thread_id}")
+async def admin_conversation(thread_id: str, _admin: str = Depends(require_admin)) -> JSONResponse:
+    thread = await asyncio.to_thread(get_thread, thread_id)
+    if thread is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    messages = await asyncio.to_thread(list_messages, thread_id)
+    return JSONResponse({
+        "id": thread.id,
+        "page": thread.page,
+        "department": thread.department,
+        "messages": [{
+            "role": message.role,
+            "content": message.content,
+            "agent": chat_service.AGENT_DISPLAY.get(message.agent, message.agent) if message.agent else None,
+            "blocked": message.blocked_reason is not None,
+            "created_at": message.created_at.isoformat(),
+        } for message in messages],
+    }, headers={"Cache-Control": "no-store"})

@@ -22,6 +22,13 @@ cp .env.example .env            # then fill in your keys
 uvicorn server.main:app --reload --port 8000
 ```
 
+## Conversation admin
+
+Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` in `.env`, restart the server, and open
+`http://localhost:8000/admin`. The read-only viewer lists the latest 100 conversations.
+Leave either credential empty to keep the admin routes disabled. In production, serve
+the admin page over HTTPS and use a unique, strong password.
+
 ## Project layout
 - `chatbot/` – agents, tools, guardrails (no web code)
 - `server/` – chat API: threads, messages, streaming `/api/chat`, rate limiting

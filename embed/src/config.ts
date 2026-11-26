@@ -4,7 +4,7 @@ import type { WidgetConfig } from "./types";
 export const DEFAULTS: WidgetConfig = {
   apiUrl: "https://chat.coltektechnologies.io",
   brand: { primary: "#0B2545", accent: "#13C4A3", text: "#1B1B1B", surface: "#FFFFFF" },
-  logoUrl: "",
+  logoUrl: "https://coltektechnologies.io/android-chrome-512x512.png",
   botName: "Coltek Assistant",
   position: "right",
   greeting: "Hi! I'm Coltek's assistant. I can help with our software services, Coltek Code Academy courses and OpenDoor.",

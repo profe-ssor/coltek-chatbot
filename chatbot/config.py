@@ -35,14 +35,18 @@ class Settings(BaseSettings):
     trace_include_sensitive_data: bool = False
 
     # Email to the Coltek team after every new lead or demo request (chatbot/notify.py).
-    # Leave SMTP_HOST empty to switch email off; a warning is logged instead.
-    smtp_host: str = ""
+    # EMAIL_* names take priority; SMTP_* names remain supported for compatibility.
+    smtp_host: str = Field("", validation_alias=AliasChoices("EMAIL_SMTP_SERVER", "SMTP_HOST"))
     smtp_port: int = 587
-    smtp_user: str = ""
-    smtp_password: str = ""
+    smtp_user: str = Field("", validation_alias=AliasChoices("EMAIL_ADDRESS", "SMTP_USER"))
+    smtp_password: str = Field("", validation_alias=AliasChoices("EMAIL_APP_PASSWORD", "SMTP_PASSWORD"))
     smtp_use_tls: bool = True          # STARTTLS on port 587; set False for port 25 / local test servers
     smtp_from: str = ""                # defaults to smtp_user if empty
     notify_email_to: str = ""          # comma-separated team addresses
+
+    # Optional private conversation viewer at /admin (HTTP Basic authentication).
+    admin_username: str = ""
+    admin_password: str = ""
 
     @property
     def allowed_origins_list(self) -> list[str]:
