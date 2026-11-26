@@ -5,7 +5,7 @@ Verified against openai-agents 0.25.0:
                     session_settings)  with get_items(limit) / add_items(items) / pop_item()
 It needs an *async* engine, so DATABASE_URL is converted automatically:
   sqlite:///./chatbot.sqlite3   -> sqlite+aiosqlite:////<project>/chatbot.sqlite3
-  postgresql://...              -> postgresql+asyncpg://...   (pip install asyncpg)
+  postgresql://...              -> postgresql+psycopg://... (psycopg 3 async dialect)
 
 The session stores every item the model sees: visitor messages, replies, tool calls WITH their
 arguments (e.g. the name and phone passed to save_lead), tool results and handoffs.
@@ -41,7 +41,9 @@ def to_async_url(url: str) -> str:
             database = str((PROJECT_ROOT / database).resolve())   # same file as chatbot/db.py uses
         parsed = parsed.set(drivername="sqlite+aiosqlite", database=database)
     elif backend == "postgresql":
-        parsed = parsed.set(drivername="postgresql+asyncpg")
+        # psycopg 3 provides both sync and async SQLAlchemy dialects and accepts
+        # Neon/libpq URL options such as sslmode and channel_binding.
+        parsed = parsed.set(drivername="postgresql+psycopg")
     return parsed.render_as_string(hide_password=False)
 
 

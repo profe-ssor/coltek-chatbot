@@ -10,6 +10,11 @@ from pathlib import Path
 
 _SESSION_DB = Path(tempfile.mkdtemp(prefix="coltek-tests-")) / "session.sqlite3"
 os.environ["DATABASE_URL"] = f"sqlite:///{_SESSION_DB}"
+os.environ["EMAIL_BACKEND"] = "smtp"
+os.environ["EMAIL_SMTP_SERVER"] = ""
+os.environ["EMAIL_ADDRESS"] = ""
+os.environ["RESEND_API_KEY"] = ""
+os.environ["DEFAULT_FROM_EMAIL"] = ""
 os.environ["SMTP_HOST"] = ""
 os.environ["NOTIFY_EMAIL_TO"] = ""
 # No traces are uploaded to OpenAI from tests (the SDK otherwise exports them even when a run

@@ -107,6 +107,11 @@ def _resolve_sqlite_path(url: str) -> str:
 
 def make_engine(url: str):
     url = _resolve_sqlite_path(url)
+    parsed = make_url(url)
+    if parsed.get_backend_name() == "postgresql":
+        # Neon supplies postgresql:// URLs. Use psycopg 3 explicitly instead of
+        # SQLAlchemy's legacy psycopg2 default; the same dialect works async too.
+        url = parsed.set(drivername="postgresql+psycopg").render_as_string(hide_password=False)
     connect_args = {"check_same_thread": False} if url.startswith("sqlite") else {}   # tools run in worker threads
     return create_engine(url, connect_args=connect_args)
 

@@ -35,7 +35,10 @@ class Settings(BaseSettings):
     trace_include_sensitive_data: bool = False
 
     # Email to the Coltek team after every new lead or demo request (chatbot/notify.py).
-    # EMAIL_* names take priority; SMTP_* names remain supported for compatibility.
+    # Resend uses HTTPS; SMTP remains available as a fallback/legacy backend.
+    email_backend: str = "smtp"
+    resend_api_key: str = ""
+    default_from_email: str = ""
     smtp_host: str = Field("", validation_alias=AliasChoices("EMAIL_SMTP_SERVER", "SMTP_HOST"))
     smtp_port: int = 587
     smtp_user: str = Field("", validation_alias=AliasChoices("EMAIL_ADDRESS", "SMTP_USER"))
